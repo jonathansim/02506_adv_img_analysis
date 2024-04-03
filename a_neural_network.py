@@ -2,7 +2,7 @@
 import numpy as np
 
 class NN_advanced:
-    def __init__(self, hidden_layers:list, input_dim, output_dim):
+    def __init__(self, hidden_layers:list, input_dim, output_dim, init_factor=True):
 
         self.Ws = []
 
@@ -12,9 +12,13 @@ class NN_advanced:
             else:
                 self.Ws.append(np.random.randn(hidden_layers[i-1] + 1, hidden_layers[i]))
     
-        self.Ws.append(np.random.randn(hidden_layers[-1] + 1, output_dim))
+        self.Ws.append(np.random.randn(hidden_layers[-1] + 1, output_dim) * np.sqrt(2/(hidden_layers[-1] + 1)))
 
         self.N_weights = len(self.Ws)
+
+        if init_factor:
+            for i in range(self.N_weights):
+                self.Ws[i] *= np.sqrt(2/self.Ws[i].shape[0])
 
 
     @staticmethod
