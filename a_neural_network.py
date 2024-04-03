@@ -1,28 +1,5 @@
 
 import numpy as np
-from make_data import make_data
-import matplotlib.pyplot as plt
-
-X_train, Y, X_test, dim = make_data(example_nr=2)
-
-X_train = X_train
-X_test = X_test
-Y = Y
-
-[dim, N] = X_train.shape
-
-input_dim = dim
-output_dim = len(np.unique(Y))
-
-print(f"amount of samples: {N}")
-print(f"predicting {np.unique(Y)}")
-print(f"X_train: {[dim, N]}")
-
-
-mean = np.mean(X_train, axis=1)
-std = np.std(X_train, axis=1)
-X_train = ((X_train.T - mean)/std).T
-
 
 class NN_advanced:
     def __init__(self, hidden_layers:list, input_dim, output_dim):
@@ -139,26 +116,48 @@ class NN_advanced:
 
 
 
+if __name__ == '__main__':
+    from make_data import make_data
+    import matplotlib.pyplot as plt
 
-    
-model = NN_advanced(hidden_layers=[100,100], output_dim=output_dim, input_dim=input_dim)
+    X_train, Y, X_test, dim = make_data(example_nr=2)
 
-output, save = model.forward(X_train)
+    X_train = X_train
+    X_test = X_test
+    Y = Y
 
-#print(output, save)
+    [dim, N] = X_train.shape
 
-# plt.plot(X_train[:,0]*std[0] + mean[0], X_train[:,1]*std[1] + mean[1], '.')
+    input_dim = dim
+    output_dim = len(np.unique(Y))
 
-model.train(X_train, Y, 10, lr=0.0001, print_every=1)
+    print(f"amount of samples: {N}")
+    print(f"predicting {np.unique(Y)}")
+    print(f"X_train: {[dim, N]}")
 
 
-y_pred, _ = model.forward(((X_test.T - mean)/std).T)
+    mean = np.mean(X_train, axis=1)
+    std = np.std(X_train, axis=1)
+    X_train = ((X_train.T - mean)/std).T
+        
+    model = NN_advanced(hidden_layers=[100,100], output_dim=output_dim, input_dim=input_dim)
 
-empty = np.zeros((100,100))
+    output, save = model.forward(X_train)
 
-empty[X_test[0], X_test[1]] = np.argmax(y_pred, axis=0)
+    #print(output, save)
 
-plt.imshow(empty)
-plt.plot(X_train[0][Y[0]] * std[0] + mean[0], X_train[1][Y[0]] * std[1] + mean[1], 'r.')
-plt.plot(X_train[0][Y[1]] * std[0] + mean[0], X_train[1][Y[1]] * std[1] + mean[1], 'g.')
-plt.show()
+    # plt.plot(X_train[:,0]*std[0] + mean[0], X_train[:,1]*std[1] + mean[1], '.')
+
+    model.train(X_train, Y, 10, lr=0.0001, print_every=1)
+
+
+    y_pred, _ = model.forward(((X_test.T - mean)/std).T)
+
+    empty = np.zeros((100,100))
+
+    empty[X_test[0], X_test[1]] = np.argmax(y_pred, axis=0)
+
+    plt.imshow(empty)
+    plt.plot(X_train[0][Y[0]] * std[0] + mean[0], X_train[1][Y[0]] * std[1] + mean[1], 'r.')
+    plt.plot(X_train[0][Y[1]] * std[0] + mean[0], X_train[1][Y[1]] * std[1] + mean[1], 'g.')
+    plt.show()
