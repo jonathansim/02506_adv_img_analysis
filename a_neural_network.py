@@ -34,7 +34,6 @@ class NN_advanced:
         return  np.exp(x)/(np.exp(x).sum(0))
 
     def forward(self, x):
-
         hi = x.copy()
         save = []
 
@@ -51,7 +50,6 @@ class NN_advanced:
         return output, save
 
 
-
     
     def cross_entropy(self, y, y_pred):
         return -np.sum(y * np.log(y_pred))
@@ -66,10 +64,6 @@ class NN_advanced:
             if (i%print_every==0) and (i!=0): print(f"{i}: loss: {loss}")
 
 
-
-
-
-
             delta_l_star = delta_i_plus_one = y_pred - y
 
             Qs = []
@@ -79,20 +73,15 @@ class NN_advanced:
             delta_i =  delta_l_star
 
             for i in range(1, self.N_weights):
-                Qi = self.add_ones(save[-i]) @ delta_i.T
+                Qi = self.add_ones(h[-i]) @ delta_i.T
 
                 Qs.append(Qi)
 
-                delta_i = (save[-i] > 0) * (self.Ws[-i][:-1,:] @ delta_i_plus_one)
+                delta_i = (h[-i] > 0) * (self.Ws[-i][:-1,:] @ delta_i_plus_one)
         
-
                 delta_i_plus_one = delta_i
-            
-
-
+        
             Qs.append(self.add_ones(x) @ delta_i.T)
-
-
 
             #print([i.shape for i in self.Ws])
             #print([i.shape for i in Qs])
@@ -102,10 +91,7 @@ class NN_advanced:
             for j, Q in enumerate(Qs):
                 self.Ws[-(j+1)] = self.Ws[-(j+1)] - lr*Qs[j]
 
-            
-
-            
-
+        
             # #print(self.W_1.shape, Q_1.shape)
             # self.W_1 = self.W_1 - lr * Q_1
             # self.W_2 = self.W_2 - lr * Q_2
@@ -139,7 +125,7 @@ if __name__ == '__main__':
     mean = np.mean(X_train, axis=1)
     std = np.std(X_train, axis=1)
     X_train = ((X_train.T - mean)/std).T
-        
+
     model = NN_advanced(hidden_layers=[100,100], output_dim=output_dim, input_dim=input_dim)
 
     output, save = model.forward(X_train)
